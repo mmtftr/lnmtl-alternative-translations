@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/MMDF/lnmtl-alternative-translations/issues"
   },
-  "homepage": "https://github.com/MMDF/lnmtl-alternative-translations#readme"
+  "homepage": "https://github.com/MMDF/lnmtl-alternative-translations#readme",
+  "dependencies": {
+    "webpack-userscript": "^2.5.1"
+  }
 }
