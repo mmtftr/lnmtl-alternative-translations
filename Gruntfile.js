@@ -17,7 +17,7 @@ module.exports = (grunt) => {
         browserify: {
             production: {
                 src: "src/**/*.js",
-                dest: "./dist/userscript.js",
+                dest: "./dist/translatelib.user.js",
                 options: {
                     banner,
                     browserifyOptions: { debug: false },
