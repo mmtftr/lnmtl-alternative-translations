@@ -10,7 +10,7 @@ const banner = `// ==UserScript==
 // @require      https://userscripts-mirror.org/scripts/source/107941.user.js#sha384=Q8t880BurrlGKTdpvYv2+da12PYnvljdiU8aJvakk1uE3QMbzb190ueXNpAUY98p
 // @license      MIT
 // ==/UserScript==
-`;
+`
 module.exports = (grunt) => {
     grunt.initConfig({
         pkg: grunt.file.readJSON("package.json"),
@@ -35,10 +35,35 @@ module.exports = (grunt) => {
                     plugin: [["minifyify", { map: false }]],
                 },
             },
+            development: {
+                src: "src/**/*.js",
+                dest: "./dist/translatelib.dev.js",
+                options: {
+                    banner,
+                    browserifyOptions: { debug: true },
+                    transform: [
+                        [
+                            "babelify",
+                            {
+                                presets: ["@babel/preset-env"],
+                                plugins: [
+                                    "@babel/plugin-proposal-class-properties",
+                                ],
+                            },
+                        ],
+                    ],
+                    plugin: [["minifyify", { map: true }]],
+                },
+            },
         },
-    });
+        watch: {
+            files: "src/**/*.js",
+            tasks: ["browserify:development"],
+        },
+    })
 
-    grunt.loadNpmTasks("grunt-browserify");
+    grunt.loadNpmTasks("grunt-browserify")
+    grunt.loadNpmTasks("grunt-contrib-watch")
 
-    grunt.registerTask("default", ["browserify"]);
-};
+    grunt.registerTask("default", ["browserify"])
+}
