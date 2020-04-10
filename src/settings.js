@@ -1,9 +1,8 @@
 import GoogleTranslate from "./translators/google"
 import { devLog } from "./util"
+import ReversoTranslate from "./translators/reverso"
 class ProviderSettings {
-    constructor(enabled) {
-        this.enabled = enabled
-    }
+    constructor() {}
     get stylesheet() {
         return (
             this.themes[this.selectedTheme] +
@@ -12,8 +11,8 @@ class ProviderSettings {
     }
 }
 class GoogleSettings extends ProviderSettings {
-    constructor(enabled) {
-        super(enabled)
+    constructor() {
+        super()
         this.shortname = "GT"
         this.className = "gt"
         this.name = "Google Translate"
@@ -28,7 +27,23 @@ class GoogleSettings extends ProviderSettings {
         }
     }
 }
-
+class ReversoSettings extends ProviderSettings {
+    constructor() {
+        super()
+        this.shortname = "RV"
+        this.className = "rv"
+        this.name = "Reverso Translate"
+        this.defaultColor = "lightcoral"
+        this.provider = new ReversoTranslate()
+        this.themes = {
+            Default:
+                ".rv { color:white; font-size: 2.3rem; margin-bottom:42px; font-family: Roboto }",
+            LNMTL_EN: "",
+            LNMTL_ZN: ".rv {font-size: 150%;}",
+            Custom: "customStyleSheet",
+        }
+    }
+}
 export default class SettingsManager {
     get stylesheet() {
         let stylesheet = ""
@@ -39,14 +54,14 @@ export default class SettingsManager {
         return stylesheet
     }
     disclaimerChangesApplyAfterReload() {
-        if (disclaimerShown) return
+        if (this.disclaimerShown) return
         let disclaimer = $(`<div class="alert alert-warning" role="alert">
                             <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
                             <span class="sr-only">Note:</span>
                             Please refresh for settings to apply.
                             </div>`)
         $("#custom-stylesheet").after(disclaimer)
-        disclaimerShown = true
+        this.disclaimerShown = true
     }
     async addSettings() {
         this.addLibSettings()
@@ -58,15 +73,23 @@ export default class SettingsManager {
     addStyling() {
         $('<style type="text/css"/>').text(this.stylesheet).appendTo("head")
     }
-    constructor(providers) {
-        this.settings = { google: new GoogleSettings() }
+    constructor() {
+        this.settings = {
+            google: new GoogleSettings(),
+            reverso: new ReversoSettings(),
+        }
+        this.restoreLibSettings()
         for (const provider in this.settings) {
             this.restoreProviderSettings(this.settings[provider])
         }
-        this.addSettings()
+        this.addSettings().catch((e) => devLog(e, "addsettings"))
         devLog("settings initialized")
     }
-
+    restoreLibSettings() {
+        const autoSwitchLNMTL = GM_SuperValue.get("autoSwitchLNMTL", false)
+        this.lib = { autoSwitchLNMTL: autoSwitchLNMTL }
+        devLog("restored autoSwitchLNMTL", autoSwitchLNMTL)
+    }
     restoreProviderSettings(providerSettings) {
         providerSettings.autoSwitchOn = GM_SuperValue.get(
             `${providerSettings.className}-autoSwitchOn`,
@@ -84,23 +107,66 @@ export default class SettingsManager {
             `${providerSettings.className}-borderColor`,
             providerSettings.defaultColor
         )
+        providerSettings.enabled = GM_SuperValue.get(
+            `${providerSettings.className}-enabled`,
+            false
+        )
     }
     addLibSettings() {
-        // let checked2 = autoSwitchLNMTL ? "checked" : ""
-        // let optionAutoswitchLNMTL = $(
-        //   '<sub><input id="autoSwitchLNMTL" type="checkbox" ' +
-        //     checked +
-        //     '></sub> <label for="autoSwitchLNMTL">Automatically hide English LNMTL Translation after loading</label>'
-        // ).on("change", function () {
-        //   autoSwitchOn = $("#autoSwitchLNMTL")[0].checked
-        //   GM_SuperValue.set("autoSwitchLNMTL", autoSwitchOn)
-        //   disclaimerChangesApplyAfterReload()
-        // })
+        const checked = this.lib.autoSwitchLNMTL ? "checked" : ""
+        devLog(this.lib.autoSwitchLNMTL, "LNMTL AUTO SWITCH")
+        const libsettingshtml = `
+            <h3>TranslateLib Settings</h3>
+            <sub><input id="autoSwitchLNMTL" type="checkbox" ${checked}></sub> <label for="autoSwitchLNMTL">Automatically hide English LNMTL Translation after loading</label>
+            <div class="btn-group btn-group-lg btn-group-justified" role="group" id="enabledTranslators">
+            ${Object.keys(this.settings)
+                .map(
+                    (provider) =>
+                        `<div class="btn-group" role="group"><button type="button" id="${
+                            this.settings[provider].className
+                        }-enabled" class="btn ${
+                            this.settings[provider].enabled ? "btn-success" : ""
+                        } btn-default">${
+                            this.settings[provider].shortname
+                        }</div></button>`
+                )
+                .join("")}
+            </div>
+        `
+        const optionAutoswitchLNMTL = $(libsettingshtml)
+
+        $("#chapter-display-options-modal .modal-body").append(
+            optionAutoswitchLNMTL
+        )
+
+        const _this = this
+        $("#autoSwitchLNMTL").on("change", function () {
+            const autoSwitchLNMTL = $(this).get(0).checked
+            GM_SuperValue.set("autoSwitchLNMTL", autoSwitchLNMTL ? true : false)
+            devLog("set autoSwitchLNMTL to", autoSwitchLNMTL)
+            _this.disclaimerChangesApplyAfterReload()
+        })
+        for (let provider in this.settings) {
+            $(`#${this.settings[provider].className}-enabled`).on(
+                "click",
+                function () {
+                    const enabled = !$(this).hasClass("btn-success")
+                    $(this).toggleClass("btn-success")
+                    GM_SuperValue.set(
+                        `${_this.settings[provider].className}-enabled`,
+                        enabled
+                    )
+                    _this.disclaimerChangesApplyAfterReload()
+                }
+            )
+        }
     }
 
     addProviderSettings(providerSettings) {
         const _this = this
-        let title = $(`<h3> ${providerSettings.name} Settings </h3>`)
+        let title = $(
+            `<h3 id="${providerSettings.className}-title"> ${providerSettings.name} Settings </h3>`
+        )
         let checked = providerSettings.autoSwitchOn ? " checked" : ""
         let optionAutoswitch = $(
             `<sub><input id="${providerSettings.className}-autoSwitchOn" type="checkbox"${checked}></sub> <label for="${providerSettings.className}-autoSwitchOn">Automatically show ${providerSettings.name} after loading</label>`

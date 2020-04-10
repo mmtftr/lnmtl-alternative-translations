@@ -5,11 +5,11 @@ import {
 } from "./util"
 
 export async function translateUsingTranslator(rawPars, provider, interval) {
-    let chunks = seperateIntoNChunks(5000, rawPars)
+    let chunks = seperateIntoNChunks(provider.chunkLen, rawPars)
     let translatedChunks = []
     for (const chunk of chunks) {
-        translatedChunks.push(await provider.translateText(chunk))
+        translatedChunks.push(provider.translateText(chunk))
         await sleepPromise(interval)
     }
-    return seperateChunksIntoPars(translatedChunks)
+    return seperateChunksIntoPars(await Promise.all(translatedChunks))
 }

@@ -52,7 +52,6 @@ module.exports = (grunt) => {
                             },
                         ],
                     ],
-                    plugin: [["minifyify", { map: true }]],
                 },
             },
         },

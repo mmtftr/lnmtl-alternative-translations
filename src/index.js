@@ -1,7 +1,7 @@
 import "babel-polyfill"
 import SettingsManager from "./settings"
 import { translateUsingTranslator } from "./translate"
-import { getRawParagraphs, devLog } from "./util"
+import { getRawParagraphs, devLog, sleepPromise } from "./util"
 import UGMTLManager from "./ugmtl-manager"
 import UIManager from "./ui"
 
@@ -21,15 +21,26 @@ async function main() {
     const pars = getRawParagraphs()
 
     devLog("waited for raws")
+    let translators = []
     for (const provider in settingsManager.settings) {
         const providerSettings = settingsManager.settings[provider]
-        let translatedPars = await translateUsingTranslator(
-            pars,
-            providerSettings.provider,
-            300
+        if (!providerSettings.enabled) {
+            continue
+        }
+        translators.push(
+            translateUsingTranslator(pars, providerSettings.provider, 300).then(
+                (translatedPars) => {
+                    uiManager.addTL(translatedPars, providerSettings)
+                    uiManager.enableButton(providerSettings)
+                    uiManager.annotateTerms(providerSettings)
+                }
+            )
         )
-        uiManager.addTL(translatedPars, providerSettings)
-        uiManager.enableButton(providerSettings)
+        await sleepPromise(700)
+    }
+    if (settingsManager.lib.autoSwitchLNMTL) {
+        await Promise.all(translators)
+        uiManager.hideLNMTL()
     }
 }
 

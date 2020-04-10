@@ -37,6 +37,7 @@ GM_xmlhttpRequest(request);
 */
 
 export default class GoogleTranslate {
+    chunkLen = 5000
     translateText(text) {
         return new Promise((res, rej) =>
             $.ajax(
