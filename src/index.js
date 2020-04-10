@@ -39,7 +39,7 @@ async function main() {
         await sleepPromise(700)
     }
     if (settingsManager.lib.autoSwitchLNMTL) {
-        await Promise.all(translators)
+        await Promise.race(translators)
         uiManager.hideLNMTL()
     }
 }
