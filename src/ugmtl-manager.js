@@ -33,6 +33,7 @@ export default class UGMTLManager {
 
     isUGMTLReplacingRaws() {
         if ($("#replaceInOriginal")[0] && $("#replaceInOriginal")[0].checked) {
+            devLog("raws replaced by ugmtl")
             return true
         }
         return false
@@ -102,7 +103,7 @@ export default class UGMTLManager {
     observeDocument() {
         document.addEventListener(
             "userjs_UGMTLComplete",
-            function () {
+            () => {
                 devLog("userjs_UGMTLComplete")
                 this.rawsReplaced = true
                 this.UGMTLUpdated = true
