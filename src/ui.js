@@ -9,6 +9,15 @@ export default class UIManager {
     }
     constructor(settingsManager) {
         this.constructUI(settingsManager)
+        this.supportsLookbehind = this.lookbehindCheck() // We need to know if lookbehind works for better term replacement.
+    }
+    lookbehindCheck() {
+        try {
+            let regexp = new RegExp("(?<=plswork)abc", "g") // Some random regexp that uses lookbehind
+            return true
+        } catch (e) {
+            return false
+        }
     }
     addTL(pars, providerSettings) {
         const translated = $(".translated")
@@ -110,9 +119,12 @@ export default class UIManager {
              * So that only normal text is modified and not html
              */
             let deconstruct = termedPar.split(/[<>]/)
+            const termRegexp = this.supportsLookbehind
+                ? new RegExp(`(?<!\\w)${content}(?!\\w)`, "g")
+                : new RegExp(`\\b${content}(?!\\w)`, "g")
             // devLog(deconstruct)
             let replacedDeconstruct = deconstruct[0].replace(
-                new RegExp(`\\b${content}\\b`, "g"),
+                termRegexp,
                 term.outerHTML
             )
             // devLog(replacedDeconstruct)
@@ -126,10 +138,7 @@ export default class UIManager {
                     "<" +
                     deconstruct[i + 2] +
                     ">" +
-                    deconstruct[i + 3].replace(
-                        new RegExp(`\\b${content}\\b`, "g"),
-                        term.outerHTML
-                    )
+                    deconstruct[i + 3].replace(termRegexp, term.outerHTML)
             }
             termedPar = replacedDeconstruct
         })
