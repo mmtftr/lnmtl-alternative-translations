@@ -6,7 +6,21 @@ class ProviderSettings {
     get stylesheet() {
         return (
             this.themes[this.selectedTheme] +
-            `.${this.className} {border-left: 3px solid ${this.borderColor}; padding-left:10px;}`
+            `.${this.className} {border-left: 3px solid ${this.borderColor};position:relative;}
+            .${this.className}.translateLib::before {
+                content: '';
+                width: 100%;
+                height: 100%;
+                display: block;
+                position: absolute;
+                background-color: ${this.borderColor};
+                opacity: 0.2;
+                z-index: -1;
+            }
+            ${this.className} sentence {
+                margin-left:15px;
+            }
+            `
         )
     }
 }
