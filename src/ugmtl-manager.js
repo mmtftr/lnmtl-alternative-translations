@@ -24,6 +24,7 @@ export default class UGMTLManager {
         this.UGMTLUpdated = false
 
         this.rawsReplacedPromise = new Promise((res) => (this._resolve = res))
+
         this.observeRaws()
 
         setTimeout(this.rawsReplace.bind(this), waitTime)
@@ -54,37 +55,7 @@ export default class UGMTLManager {
         }
     }
 
-    // rawsReplaced becomes true when the last raw has its terms replaced
-    observerCallback(mutationList) {
-        mutationList.forEach((mutation) => {
-            switch (mutation.type) {
-                case "attributes":
-                    if (mutation.attributeName == "data-title") {
-                        setTimeout(() => {
-                            this.rawsReplaced = true
-                        }, 50)
-                    }
-                    break
-            }
-        })
-    }
-
     observeRaws() {
-        const observerOptions = {
-            childList: false,
-            attributes: true,
-        }
-
-        /** Observes last element in translated sentences for UGMTL integration
-         *  @deprecated This method has many shortcomings and would fail in many edge-cases.
-         *  Update UGMTL for proper raw replacement detection
-         * */
-        const observer = new MutationObserver(this.observerCallback)
-
-        if ($(".original t").get(-1) != undefined) {
-            observer.observe($(".original t").get(-1), observerOptions) // Observe last element in translated texts
-        }
-
         this.observeDocument() // Listen for UGMTL's document event
 
         if (
