@@ -1,14 +1,37 @@
 import { devLog, sleepPromise } from "./util"
 
 export default class UIManager {
-    async constructUI(settingsManager) {
-        for (const provider in settingsManager.settings) {
-            this.addButton(settingsManager.settings[provider])
+    async constructUI() {
+        for (const provider in this.settingsManager.settings) {
+            this.addButton(this.settingsManager.settings[provider])
         }
+        this.addModal()
         devLog("uimanager initialized")
     }
+    addModal() {
+        $(`
+        <div id="translationModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Other translations</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>Some text in the modal.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        `).appendTo("body")
+    }
     constructor(settingsManager) {
-        this.constructUI(settingsManager)
+        this.settingsManager = settingsManager
+        this.constructUI()
         this.supportsLookbehind = this.lookbehindCheck() // We need to know if lookbehind works for better term replacement.
     }
     lookbehindCheck() {
@@ -22,14 +45,41 @@ export default class UIManager {
     addTL(pars, providerSettings) {
         const translated = $(".translated")
         pars.forEach((par, index) => {
-            translated
-                .eq(index)
-                .after(
-                    `<div class='${providerSettings.className} translateLib' tab-index=0><sentence data-index=${index}>${par}</sentence></div>`
-                )
+            const tl = $(
+                `<div class='${providerSettings.className} translateLib' tab-index=0><sentence data-index=${index}>${par}</sentence></div>`
+            )
+            tl.on("click", (e) => {
+                if ($(e.target).is("t")) {
+                    return
+                }
+                this.showTranslationModal(index)
+            })
+            translated.eq(index).after(tl)
         })
         const div = $(`.${providerSettings.className}`)
         div.hide()
+    }
+    showTranslationModal(index) {
+        let translations = []
+        for (let provider in this.settingsManager.settings) {
+            try {
+                let text = $(
+                    `.${this.settingsManager.settings[provider].className}`
+                )
+                    .eq(index)
+                    .text()
+                let translationItem = `<div class="${this.settingsManager.settings[provider].className} list-group-item">${text}</div>`
+
+                translations.push(translationItem)
+            } catch (e) {
+                continue
+            }
+        }
+        devLog(translations)
+        $("#translationModal .modal-body").html(
+            `<div class="list-group">${translations.join("")}</div>`
+        )
+        $("#translationModal").modal()
     }
     addButton(providerSettings) {
         if (!providerSettings.enabled) {
@@ -43,7 +93,7 @@ export default class UIManager {
      * After translation is complete, enables the button of the translation.
      * @param {ProviderSettings} providerSettings
      */
-    enableButton(providerSettings) {
+    async enableButton(providerSettings) {
         const div = $(`.${providerSettings.className}`)
         const button = $(`.js-toggle-${providerSettings.className}`)
         button
@@ -119,7 +169,7 @@ export default class UIManager {
              * So that only normal text is modified and not html
              */
             let deconstruct = termedPar.split(/[<>]/)
-            const termRegexp = this.supportsLookbehind
+            const termRegexp = _this.supportsLookbehind
                 ? new RegExp(`(?<!\\w)${content}(?!\\w)`, "g")
                 : new RegExp(`\\b${content}(?!\\w)`, "g")
             // devLog(deconstruct)
