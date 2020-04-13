@@ -1,4 +1,5 @@
-export default class GoogleTranslate {
+import ProviderSettings from "./default"
+class GoogleTranslate {
     chunkLen = 5000
     translateText(text) {
         return new Promise((res, rej) =>
@@ -28,5 +29,22 @@ export default class GoogleTranslate {
                     )
                 })
         )
+    }
+}
+export default class GoogleSettings extends ProviderSettings {
+    constructor() {
+        super()
+        this.shortname = "GT"
+        this.className = "gt"
+        this.name = "Google Translate"
+        this.defaultColor = "lightblue"
+        this.provider = new GoogleTranslate()
+        this.themes = {
+            Default:
+                ".gt { color:white; font-size: 2.3rem; margin-bottom:42px; font-family: Roboto }",
+            LNMTL_EN: "",
+            LNMTL_ZN: ".gt {font-size: 150%;}",
+            Custom: "customStyleSheet",
+        }
     }
 }

@@ -1,6 +1,6 @@
 import { devLog } from "../util"
-
-export default class ReversoTranslate {
+import ProviderSettings from "./default"
+class ReversoTranslate {
     chunkLen = 2400
     async translateText(text) {
         let request = await fetch(
@@ -27,5 +27,22 @@ export default class ReversoTranslate {
         const pars = JSON.parse(translateResult.d.translation)
 
         return pars.reduce((acc, curr) => acc + curr.paragraph, "")
+    }
+}
+export default class ReversoSettings extends ProviderSettings {
+    constructor() {
+        super()
+        this.shortname = "RV"
+        this.className = "rv"
+        this.name = "Reverso Translate"
+        this.defaultColor = "lightcoral"
+        this.provider = new ReversoTranslate()
+        this.themes = {
+            Default:
+                ".rv { color:white; font-size: 2.3rem; margin-bottom:42px; font-family: Roboto }",
+            LNMTL_EN: "",
+            LNMTL_ZN: ".rv {font-size: 150%;}",
+            Custom: "customStyleSheet",
+        }
     }
 }

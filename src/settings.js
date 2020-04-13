@@ -1,63 +1,7 @@
-import GoogleTranslate from "./translators/google"
 import { devLog } from "./util"
-import ReversoTranslate from "./translators/reverso"
-class ProviderSettings {
-    constructor() {}
-    get stylesheet() {
-        return (
-            this.themes[this.selectedTheme] +
-            `.${this.className} {border-left: 3px solid ${this.borderColor};position:relative;}
-            .${this.className}.translateLib::before {
-                content: '';
-                width: 100%;
-                height: 100%;
-                display: block;
-                position: absolute;
-                background-color: ${this.borderColor};
-                opacity: 0.2;
-                z-index: -1;
-            }
-            ${this.className} sentence {
-                margin-left:15px;
-            }
-            `
-        )
-    }
-}
-class GoogleSettings extends ProviderSettings {
-    constructor() {
-        super()
-        this.shortname = "GT"
-        this.className = "gt"
-        this.name = "Google Translate"
-        this.defaultColor = "lightblue"
-        this.provider = new GoogleTranslate()
-        this.themes = {
-            Default:
-                ".gt { color:white; font-size: 2.3rem; margin-bottom:42px; font-family: Roboto }",
-            LNMTL_EN: "",
-            LNMTL_ZN: ".gt {font-size: 150%;}",
-            Custom: "customStyleSheet",
-        }
-    }
-}
-class ReversoSettings extends ProviderSettings {
-    constructor() {
-        super()
-        this.shortname = "RV"
-        this.className = "rv"
-        this.name = "Reverso Translate"
-        this.defaultColor = "lightcoral"
-        this.provider = new ReversoTranslate()
-        this.themes = {
-            Default:
-                ".rv { color:white; font-size: 2.3rem; margin-bottom:42px; font-family: Roboto }",
-            LNMTL_EN: "",
-            LNMTL_ZN: ".rv {font-size: 150%;}",
-            Custom: "customStyleSheet",
-        }
-    }
-}
+import GoogleSettings from "./translators/google"
+import ReversoSettings from "./translators/reverso"
+
 export default class SettingsManager {
     get stylesheet() {
         let stylesheet = ""
