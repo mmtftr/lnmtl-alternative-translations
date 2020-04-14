@@ -21,25 +21,28 @@ async function main() {
     const pars = getRawParagraphs()
 
     devLog("waited for raws")
-    let translators = []
+    let enabledTranslators = []
     for (const provider in settingsManager.settings) {
         const providerSettings = settingsManager.settings[provider]
         if (!providerSettings.enabled) {
             continue
         }
-        translators.push(
-            translateUsingTranslator(pars, providerSettings.provider, 300).then(
-                (translatedPars) => {
-                    uiManager.addTL(translatedPars, providerSettings)
-                    uiManager.enableButton(providerSettings)
-                    uiManager.annotateTerms(providerSettings)
-                }
-            )
-        )
-        await sleepPromise(700)
+        let translatePromise = translateUsingTranslator(
+            pars,
+            providerSettings.provider,
+            300
+        ).then((translatedPars) => {
+            devLog(translatedPars)
+            uiManager.addTL(translatedPars, providerSettings)
+            uiManager.enableButton(providerSettings)
+            uiManager.annotateTerms(providerSettings)
+        })
+
+        if (providerSettings.autoSwitchOn)
+            enabledTranslators.push(translatePromise)
     }
     if (settingsManager.lib.autoSwitchLNMTL) {
-        await Promise.race(translators)
+        await Promise.race(enabledTranslators)
         uiManager.hideLNMTL()
     }
 }
