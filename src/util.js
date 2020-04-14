@@ -7,6 +7,9 @@ export function getMTLParagraphs() {
 }
 
 export function devLog(message) {
+    if (process.env.NODE_ENV === "production") {
+        return
+    }
     console.log(message)
 }
 
