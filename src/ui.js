@@ -123,7 +123,7 @@ export default class UIManager {
         }
     }
 
-    createUI(mtlpars, gtpars, settings) {
+    createUI() {
         if (autoSwitchLNMTL) {
             $(".translated").animate({
                 height: "toggle",
