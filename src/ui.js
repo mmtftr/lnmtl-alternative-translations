@@ -124,17 +124,6 @@ export default class UIManager {
     }
 
     createUI(mtlpars, gtpars, settings) {
-        /*
-        div.attr("data-title", function () {
-            return mtlpars[$(this).children().first().data("index")];
-        }).popover({
-            animation: true,
-            container: ".chapter-body",
-            placement: "top",
-            trigger: "click",
-        });
-        */
-
         if (autoSwitchLNMTL) {
             $(".translated").animate({
                 height: "toggle",
