@@ -1,10 +1,16 @@
 import { devLog } from "./util"
 import GoogleSettings from "./translators/google"
 import ReversoSettings from "./translators/reverso"
+import NiuTranslateSettings from "./translators/niutrans"
 
 export default class SettingsManager {
     get stylesheet() {
         let stylesheet = ""
+        stylesheet += `
+        .lnmtl {
+            border-left: 3px solid black!important;
+        }
+        `
         for (const provider in this.settings) {
             stylesheet += this.settings[provider].stylesheet
         }
@@ -35,6 +41,7 @@ export default class SettingsManager {
         this.settings = {
             google: new GoogleSettings(),
             reverso: new ReversoSettings(),
+            niu: new NiuTranslateSettings(),
         }
         this.restoreLibSettings()
         for (const provider in this.settings) {
