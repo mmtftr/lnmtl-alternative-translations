@@ -27,16 +27,19 @@ async function main() {
         if (!providerSettings.enabled) {
             continue
         }
+
         let translatePromise = translateUsingTranslator(
             pars,
             providerSettings.provider,
             300
-        ).then((translatedPars) => {
-            devLog(translatedPars)
-            uiManager.addTL(translatedPars, providerSettings)
-            uiManager.enableButton(providerSettings)
-            uiManager.annotateTerms(providerSettings)
-        })
+        )
+            .then((translatedPars) => {
+                devLog(translatedPars)
+                uiManager.addTL(translatedPars, providerSettings)
+                uiManager.enableButton(providerSettings)
+                uiManager.annotateTerms(providerSettings)
+            })
+            .catch(() => retryAfterFail(providerSettings, pars, uiManager, 0))
 
         if (providerSettings.autoSwitchOn)
             enabledTranslators.push(translatePromise)
@@ -47,4 +50,24 @@ async function main() {
     }
 }
 
+function retryAfterFail(providerSettings, pars, uiManager, counter) {
+    if (counter > 3) {
+        return Promise.reject(
+            new Error(
+                `Failed to translate with provider ${providerSettings.name} after trying for ${counter} many times. 
+                Please contact the developer if you think this shouldn't have happened`
+            )
+        )
+    }
+    return translateUsingTranslator(pars, providerSettings.provider, 300)
+        .then((translatedPars) => {
+            devLog(translatedPars)
+            uiManager.addTL(translatedPars, providerSettings)
+            uiManager.enableButton(providerSettings)
+            uiManager.annotateTerms(providerSettings)
+        })
+        .catch(() =>
+            retryAfterFail(providerSettings, pars, uiManager, ++counter)
+        )
+}
 main()
