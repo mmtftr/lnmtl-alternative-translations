@@ -20,7 +20,10 @@ module.exports = (grunt) => {
                 dest: "./dist/translatelib.user.js",
                 options: {
                     banner,
-                    browserifyOptions: { debug: false },
+                    cacheFile: "./cache/prod.json",
+                    browserifyOptions: {
+                        debug: false,
+                    },
                     transform: [
                         [
                             "babelify",
@@ -40,7 +43,10 @@ module.exports = (grunt) => {
                 dest: "./dist/translatelib.dev.js",
                 options: {
                     banner,
-                    browserifyOptions: { debug: true },
+                    cacheFile: "./cache/dev.json",
+                    browserifyOptions: {
+                        debug: true,
+                    },
                     transform: [
                         [
                             "babelify",
