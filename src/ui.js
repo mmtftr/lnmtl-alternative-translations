@@ -61,6 +61,11 @@ export default class UIManager {
     }
     showTranslationModal(index) {
         let translations = []
+        translations.push(
+            `<div class="lnmtl list-group-item">
+            ${$(".translated").eq(index).text()}
+            </div>`
+        )
         for (let provider in this.settingsManager.settings) {
             try {
                 let text = $(
