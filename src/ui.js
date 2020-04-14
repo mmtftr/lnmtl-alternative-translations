@@ -73,6 +73,10 @@ export default class UIManager {
                 )
                     .eq(index)
                     .text()
+                if (text.trim().length === 0) {
+                    // Don't add translations that are not loaded yet.
+                    continue
+                }
                 let translationItem = `<div class="${this.settingsManager.settings[provider].className} list-group-item">${text}</div>`
 
                 translations.push(translationItem)
