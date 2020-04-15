@@ -25,7 +25,9 @@ class ReversoTranslate {
             return translateResult.d.result
         }
         const pars = JSON.parse(translateResult.d.translation)
-
+        if ("sentence" in pars[0]) {
+            return pars.reduce((acc, curr) => acc + curr.sentence, "")
+        }
         return pars.reduce((acc, curr) => acc + curr.paragraph, "")
     }
 }
