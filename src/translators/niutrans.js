@@ -17,7 +17,6 @@ class NiuTranslate {
                 headers: {
                     "Accept-Encoding": "gzip, deflate",
                     "User-Agent": window.useragent,
-                    "Content-Type": "application/json",
                 },
                 onload: function (result) {
                     try {
