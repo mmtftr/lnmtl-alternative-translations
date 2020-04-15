@@ -98,6 +98,14 @@ export default class UIManager {
             `<button class="btn btn-disabled text-muted js-toggle-${providerSettings.className}">Loading ${providerSettings.shortname}...</button>`
         )
     }
+    errorButton(providerSettings) {
+        const button = $(`.js-toggle-${providerSettings.className}`)
+        button
+            .addClass("btn-danger")
+            .removeClass("btn-disabled")
+            .removeClass("text-muted")
+            .text("Failed " + providerSettings.shortname)
+    }
     /**
      * After translation is complete, enables the button of the translation.
      * @param {ProviderSettings} providerSettings

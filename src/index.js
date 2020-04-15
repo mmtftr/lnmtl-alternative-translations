@@ -32,12 +32,19 @@ async function main() {
             pars,
             providerSettings.provider,
             500
-        ).then((translatedPars) => {
-            devLog(translatedPars)
-            uiManager.addTL(translatedPars, providerSettings)
-            uiManager.enableButton(providerSettings)
-            uiManager.annotateTerms(providerSettings)
-        })
+        )
+            .then((translatedPars) => {
+                devLog(translatedPars)
+                uiManager.addTL(translatedPars, providerSettings)
+                uiManager.enableButton(providerSettings)
+                uiManager.annotateTerms(providerSettings)
+            })
+            .catch((e) => uiManager.errorButton(providerSettings)) // An error propagating here means that translation failed at least 3 times for a chunk
+            .then(() => {
+                throw new Error(
+                    "Failed to translate with " + providerSettings.name
+                )
+            })
 
         if (providerSettings.autoSwitchOn)
             enabledTranslators.push(translatePromise)
