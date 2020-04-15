@@ -24,7 +24,7 @@ export default class SettingsManager {
                             <span class="sr-only">Note:</span>
                             Please refresh for settings to apply.
                             </div>`)
-        $("#custom-stylesheet").after(disclaimer)
+        $("#enabledTranslators").before(disclaimer)
         this.disclaimerShown = true
     }
     async addSettings() {
