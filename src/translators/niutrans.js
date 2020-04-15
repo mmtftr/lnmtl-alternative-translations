@@ -1,16 +1,34 @@
 import { devLog } from "../util"
 import ProviderSettings from "./default"
 class NiuTranslate {
-    chunkLen = 3200
+    chunkLen = 2000
     async translateText(text) {
-        let request = await fetch(
-            "https://test.niutrans.vip/NiuTransServer/testtrans?from=zh&to=en&src_text=" +
-                encodeURIComponent(text.trim())
-        )
-        let translateResult = await request.json()
+        let translateResult = await this.translateNiuWithGM(text)
 
-        devLog(translateResult)
         return translateResult["tgt_text"].replace(/\n\s\n/g, "\n\n")
+    }
+    translateNiuWithGM(text) {
+        return new Promise((res, rej) => {
+            GM_xmlhttpRequest({
+                method: "GET",
+                url:
+                    "http://test.niutrans.vip/NiuTransServer/testtrans?from=zh&to=en&src_text=" +
+                    encodeURIComponent(text),
+                headers: {
+                    "Accept-Encoding": "gzip, deflate",
+                    "User-Agent": window.useragent,
+                    "Content-Type": "application/json",
+                },
+                onload: function (result) {
+                    try {
+                        res(JSON.parse(result.response))
+                    } catch (error) {
+                        devLog(error)
+                        rej(error)
+                    }
+                },
+            })
+        })
     }
 }
 export default class NiuTranslateSettings extends ProviderSettings {

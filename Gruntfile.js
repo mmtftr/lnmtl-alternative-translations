@@ -7,6 +7,8 @@ const banner = (addition) => `// ==UserScript==
 // @match        https://lnmtl.com/chapter/*
 // @grant        GM_setValue
 // @grant        GM_getValue
+// @grant        GM_xmlhttpRequest
+// @connect      niutrans.vip
 // @require      https://userscripts-mirror.org/scripts/source/107941.user.js#sha384=Q8t880BurrlGKTdpvYv2+da12PYnvljdiU8aJvakk1uE3QMbzb190ueXNpAUY98p${addition}
 // @license      MIT
 // ==/UserScript==
