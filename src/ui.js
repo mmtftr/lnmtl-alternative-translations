@@ -105,6 +105,7 @@ export default class UIManager {
             .removeClass("btn-disabled")
             .removeClass("text-muted")
             .text("Failed " + providerSettings.shortname)
+        throw new Error("Failed to translate with " + providerSettings.name)
     }
     /**
      * After translation is complete, enables the button of the translation.
