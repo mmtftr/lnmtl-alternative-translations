@@ -2,6 +2,7 @@ import { devLog } from "../util"
 import ProviderSettings from "./default"
 class NiuTranslate {
     chunkLen = 3200
+    waitTime = 5000
     async translateText(text) {
         let translateResult = await this.translateNiuWithGM(text)
 

@@ -18,14 +18,14 @@ async function retryTranslating(provider, chunk, count = 0) {
 
 export async function translateUsingTranslator(rawPars, provider, interval) {
     let chunks = seperateIntoNChunks(provider.chunkLen, rawPars)
-    let translatedChunks = []
+    let translatedChunksPromises = []
     for (const chunk of chunks) {
-        translatedChunks.push(
+        translatedChunksPromises.push(
             provider
                 .translateText(chunk)
                 .catch(() => retryTranslating(provider, chunk))
         )
-        await sleepPromise(interval)
+        await sleepPromise(provider.waitTime || interval)
     }
-    return seperateChunksIntoPars(await Promise.all(translatedChunks))
+    return seperateChunksIntoPars(await Promise.all(translatedChunksPromises))
 }
