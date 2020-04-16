@@ -88,9 +88,11 @@ export default class SettingsManager {
     addLibSettings() {
         const checked = this.lib.autoSwitchLNMTL ? "checked" : ""
         devLog(this.lib.autoSwitchLNMTL, "LNMTL AUTO SWITCH")
+
         const libsettingshtml = `
             <h3>TranslateLib Settings</h3>
             <sub><input id="autoSwitchLNMTL" type="checkbox" ${checked}></sub> <label for="autoSwitchLNMTL">Automatically hide English LNMTL Translation after loading</label>
+            <p>Enabled translators:</p>
             <div class="btn-group btn-group-lg btn-group-justified" role="group" id="enabledTranslators">
             ${Object.keys(this.settings)
                 .map(
@@ -106,11 +108,30 @@ export default class SettingsManager {
                 .join("")}
             </div>
         `
-        const optionAutoswitchLNMTL = $(libsettingshtml)
+        const navTabs = `<ul class="nav nav-tabs nav-justified" role="tablist">
+                            <li role="presentation" class="active"><a href="#tllib-settings" role="tab" data-toggle="tab">TLLib</a></li>
+                            ${Object.keys(this.settings)
+                                .map(
+                                    (provider) =>
+                                        `<li role="presentation"><a href="#${this.settings[provider].className}-settings" role="tab" data-toggle="tab">${this.settings[provider].shortname}</li></button>`
+                                )
+                                .join("")}
+                        </ul>`
+        const tabPanes = `<div class="tab-content">
+                                <div role="tabpanel" class="tab-pane active" id="tllib-settings"></div>
+                                ${Object.keys(this.settings)
+                                    .map(
+                                        (provider) =>
+                                            `<div role="tabpanel" class="tab-pane" id="${this.settings[provider].className}-settings"></div>`
+                                    )
+                                    .join("")}
+                        </div>`
 
-        $("#chapter-display-options-modal .modal-body").append(
-            optionAutoswitchLNMTL
-        )
+        $("#chapter-display-options-modal .modal-body")
+            .append(navTabs)
+            .append(tabPanes)
+
+        $("#tllib-settings").append(libsettingshtml)
 
         const _this = this
         $("#autoSwitchLNMTL").on("change", function () {
@@ -134,7 +155,6 @@ export default class SettingsManager {
             )
         }
     }
-
     addProviderSettings(providerSettings) {
         const _this = this
         let title = $(
@@ -199,7 +219,7 @@ export default class SettingsManager {
             .append(label2)
             .append(textarea)
         row.append(col)
-        $("#chapter-display-options-modal .modal-body")
+        $(`#${providerSettings.className}-settings`)
             .append(title)
             .append(optionAutoswitch)
             .append("<br>")
