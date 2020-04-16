@@ -61,8 +61,8 @@ export function seperateChunksIntoPars(chunks) {
 
 export function seperateIntoNChunks(N, paragraphs) {
     let chunks = []
-    let currentchunk = ""
-    for (let i = 0; i < paragraphs.length; i++) {
+    let currentchunk = paragraphs[0]
+    for (let i = 1; i < paragraphs.length; i++) {
         if ((currentchunk + paragraphs[i]).length >= N) {
             chunks.push(currentchunk)
             currentchunk = paragraphs[i]
