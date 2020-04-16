@@ -38,6 +38,7 @@ export default class GoogleSettings extends ProviderSettings {
         this.className = "gt"
         this.name = "Google Translate"
         this.defaultColor = "lightblue"
+        this.defaultWaitTime = 500
         this.provider = new GoogleTranslate()
         this.themes = {
             Default:

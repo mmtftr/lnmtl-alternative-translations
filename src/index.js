@@ -31,7 +31,7 @@ async function main() {
         let translatePromise = translateUsingTranslator(
             pars,
             providerSettings.provider,
-            500
+            providerSettings.waitTime
         )
             .then((translatedPars) => {
                 devLog(translatedPars)

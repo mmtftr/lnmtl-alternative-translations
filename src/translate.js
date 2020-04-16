@@ -16,7 +16,7 @@ async function retryTranslating(provider, chunk, count = 0) {
     }
 }
 
-export async function translateUsingTranslator(rawPars, provider, interval) {
+export async function translateUsingTranslator(rawPars, provider, waitTime) {
     let chunks = seperateIntoNChunks(provider.chunkLen, rawPars)
     let translatedChunksPromises = []
     for (const chunk of chunks) {
@@ -25,7 +25,7 @@ export async function translateUsingTranslator(rawPars, provider, interval) {
                 .translateText(chunk)
                 .catch(() => retryTranslating(provider, chunk))
         )
-        await sleepPromise(provider.waitTime || interval)
+        await sleepPromise(waitTime)
     }
     return seperateChunksIntoPars(await Promise.all(translatedChunksPromises))
 }

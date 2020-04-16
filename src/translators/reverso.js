@@ -38,6 +38,7 @@ export default class ReversoSettings extends ProviderSettings {
         this.className = "rv"
         this.name = "Reverso Translate"
         this.defaultColor = "lightcoral"
+        this.defaultWaitTime = 500
         this.provider = new ReversoTranslate()
         this.themes = {
             Default:

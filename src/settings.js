@@ -1,4 +1,4 @@
-import { devLog } from "./util"
+import { devLog, isNumber } from "./util"
 import GoogleSettings from "./translators/google"
 import ReversoSettings from "./translators/reverso"
 import NiuTranslateSettings from "./translators/niutrans"
@@ -74,6 +74,10 @@ export default class SettingsManager {
         providerSettings.enabled = GM_SuperValue.get(
             `${providerSettings.className}-enabled`,
             false
+        )
+        providerSettings.waitTime = GM_SuperValue.get(
+            `${providerSettings.className}-waitTime`,
+            providerSettings.defaultWaitTime || 1000
         )
     }
     //#endregion
@@ -213,11 +217,29 @@ export default class SettingsManager {
             textarea.attr("disabled", selectedTheme != "Custom")
         })
 
+        const waitTime = $(`<div class="input-group">  
+        <span class="input-group-addon" >Wait between request(ms):</span>                     
+        <input type="number" class="form-control" id="${providerSettings.className}-waitTime" min="0" data-bind="value:replyNumber" value="${providerSettings.waitTime}" />
+    </div>`)
+        waitTime
+            .on("keypress", (event) => isNumber(event))
+            .on("paste", () => false)
+            .on("change", function () {
+                if (Number($(this).val()) > 0) {
+                    GM_SuperValue.set(
+                        `${providerSettings.className}-waitTime`,
+                        Number($(this).val())
+                    )
+                }
+                _this.disclaimerChangesApplyAfterReload()
+            })
+
         col.append(label1)
             .append(selectTheme)
             .append(br)
             .append(label2)
             .append(textarea)
+            .append(waitTime)
         row.append(col)
         $(`#${providerSettings.className}-settings`)
             .append(title)

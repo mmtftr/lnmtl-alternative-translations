@@ -2,7 +2,6 @@ import { devLog } from "../util"
 import ProviderSettings from "./default"
 class NiuTranslate {
     chunkLen = 3200
-    waitTime = 5000
     async translateText(text) {
         let translateResult = await this.translateNiuWithGM(text)
 
@@ -38,6 +37,7 @@ export default class NiuTranslateSettings extends ProviderSettings {
         this.className = "nt"
         this.name = "Niutrans Translate"
         this.defaultColor = "lightpink"
+        this.defaultWaitTime = 5000
         this.provider = new NiuTranslate()
         this.themes = {
             Default:
