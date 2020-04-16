@@ -225,11 +225,15 @@ export default class SettingsManager {
             .on("keypress", (event) => isNumber(event))
             .on("paste", () => false)
             .on("change", function () {
-                if (Number($(this).val()) > 0) {
+                const newWait = Number(
+                    $(`#${providerSettings.className}-waitTime`).eq(0).val()
+                )
+                if (newWait > 0) {
                     GM_SuperValue.set(
                         `${providerSettings.className}-waitTime`,
-                        Number($(this).val())
+                        newWait
                     )
+                    devLog(newWait)
                 }
                 _this.disclaimerChangesApplyAfterReload()
             })
