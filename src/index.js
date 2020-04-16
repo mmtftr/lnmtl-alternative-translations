@@ -4,13 +4,22 @@ import { translateUsingTranslator } from "./translate"
 import { getRawParagraphs, devLog, sleepPromise } from "./util"
 import UGMTLManager from "./ugmtl-manager"
 import UIManager from "./ui"
+import ProgressManager from "./progress"
 
 async function main() {
-    let ugmtl, settingsManager, uiManager
+    const currentPath = window.location.pathname.split("/").slice(1)
+    if (currentPath[0] !== "chapter") {
+        if (currentPath[0] === "novel") {
+            ProgressManager.handleProgress(currentPath)
+        }
+        return
+    }
+    let ugmtl, settingsManager, uiManager, progressManager
     try {
         ugmtl = new UGMTLManager(200)
         settingsManager = new SettingsManager()
         uiManager = new UIManager(settingsManager)
+        progressManager = new ProgressManager()
     } catch (e) {
         devLog("init failed")
         return devLog(e)

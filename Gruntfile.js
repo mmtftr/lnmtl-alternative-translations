@@ -4,7 +4,7 @@ const banner = (addition) => `// ==UserScript==
 // @version      0.2
 // @description  Includes Sogou, Baido, Google Translate and more!
 // @author       mmtf
-// @match        https://lnmtl.com/chapter/*
+// @match        https://lnmtl.com/**
 // @grant        GM_setValue
 // @grant        GM_getValue
 // @grant        GM_xmlhttpRequest
