@@ -70,6 +70,9 @@ module.exports = (grunt) => {
             },
         },
         watch: {
+            options: {
+                atBegin: true,
+            },
             files: "src/**/*.js",
             tasks: ["browserify:development"],
         },
