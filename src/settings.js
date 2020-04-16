@@ -161,11 +161,11 @@ export default class SettingsManager {
     }
     addProviderSettings(providerSettings) {
         const _this = this
-        let title = $(
+        const title = $(
             `<h3 id="${providerSettings.className}-title"> ${providerSettings.name} Settings </h3>`
         )
-        let checked = providerSettings.autoSwitchOn ? " checked" : ""
-        let optionAutoswitch = $(
+        const checked = providerSettings.autoSwitchOn ? " checked" : ""
+        const optionAutoswitch = $(
             `<sub><input id="${providerSettings.className}-autoSwitchOn" type="checkbox"${checked}></sub> <label for="${providerSettings.className}-autoSwitchOn">Automatically show ${providerSettings.name} after loading</label>`
         ).on("change", function () {
             const autoSwitchOn = $(
@@ -177,14 +177,14 @@ export default class SettingsManager {
             )
             _this.disclaimerChangesApplyAfterReload()
         })
-        let row = $('<div class="row"/>')
-        let label1 = $('<label class="control-label">Theme:</label>')
-        let br = $("<br>")
-        let label2 = $(
+        const row = $('<div class="row"/>')
+        const label1 = $('<label class="control-label">Theme:</label>')
+        const br = $("<br>")
+        const label2 = $(
             '<label class="control-label">Custom Stylesheet(choose the theme Custom to use):</label>'
         )
-        let col = $('<div class="col-xs-12"></div>')
-        let textarea = $(
+        const col = $('<div class="col-xs-12"></div>')
+        const textarea = $(
             `<textarea placeholder=".${providerSettings.className} { color:white; font-size: 2.3rem; margin-bottom:42px; font-family: Roboto }" class="form-control" id="${providerSettings.className}-custom-stylesheet" rows="2" input type="text" name="${providerSettings.className}-custom-stylesheet" wrap="soft">`
         )
             .val(providerSettings.customStyleSheet)
@@ -201,7 +201,7 @@ export default class SettingsManager {
         const themeElements = themes
             .map((theme) => `<option>${theme}</option>`)
             .join()
-        let selectTheme = $(
+        const selectTheme = $(
             `<select class="form-control" id="${providerSettings.className}-selectTheme">${themeElements}</select>`
         )
         selectTheme
