@@ -4,6 +4,30 @@ import ReversoSettings from "./translators/reverso"
 import NiuTranslateSettings from "./translators/niutrans"
 
 export default class SettingsManager {
+    disclaimerChangesApplyAfterReload() {
+        if (this.disclaimerShown) return
+        let disclaimer = $(`<div class="alert alert-warning" role="alert">
+                            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                            <span class="sr-only">Note:</span>
+                            Please refresh for settings to apply.
+                            </div>`)
+        $(".nav-tabs").before(disclaimer)
+        this.disclaimerShown = true
+    }
+    constructor() {
+        this.settings = {
+            google: new GoogleSettings(),
+            reverso: new ReversoSettings(),
+            niu: new NiuTranslateSettings(),
+        }
+        this.restoreSettings()
+        this.addSettings().catch((e) => devLog(e, "addsettings"))
+        devLog("settings initialized")
+    }
+    //#region styling
+    addStyling() {
+        $('<style type="text/css"/>').text(this.stylesheet).appendTo("head")
+    }
     get stylesheet() {
         let stylesheet = ""
         stylesheet += `
@@ -17,38 +41,13 @@ export default class SettingsManager {
         console.log(stylesheet)
         return stylesheet
     }
-    disclaimerChangesApplyAfterReload() {
-        if (this.disclaimerShown) return
-        let disclaimer = $(`<div class="alert alert-warning" role="alert">
-                            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-                            <span class="sr-only">Note:</span>
-                            Please refresh for settings to apply.
-                            </div>`)
-        $("#enabledTranslators").before(disclaimer)
-        this.disclaimerShown = true
-    }
-    async addSettings() {
-        this.addLibSettings()
-        for (const provider in this.settings) {
-            this.addProviderSettings(this.settings[provider])
-        }
-        this.addStyling()
-    }
-    addStyling() {
-        $('<style type="text/css"/>').text(this.stylesheet).appendTo("head")
-    }
-    constructor() {
-        this.settings = {
-            google: new GoogleSettings(),
-            reverso: new ReversoSettings(),
-            niu: new NiuTranslateSettings(),
-        }
+    //#endregion
+    //#region restoreSettings
+    restoreSettings() {
         this.restoreLibSettings()
         for (const provider in this.settings) {
             this.restoreProviderSettings(this.settings[provider])
         }
-        this.addSettings().catch((e) => devLog(e, "addsettings"))
-        devLog("settings initialized")
     }
     restoreLibSettings() {
         const autoSwitchLNMTL = GM_SuperValue.get("autoSwitchLNMTL", false)
@@ -76,6 +75,15 @@ export default class SettingsManager {
             `${providerSettings.className}-enabled`,
             false
         )
+    }
+    //#endregion
+    //#region addSettings
+    async addSettings() {
+        this.addLibSettings()
+        for (const provider in this.settings) {
+            this.addProviderSettings(this.settings[provider])
+        }
+        this.addStyling()
     }
     addLibSettings() {
         const checked = this.lib.autoSwitchLNMTL ? "checked" : ""
@@ -197,4 +205,5 @@ export default class SettingsManager {
             .append("<br>")
             .append(row)
     }
+    //#endregion
 }
