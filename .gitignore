@@ -80,7 +80,10 @@ typings/
 
 # Nuxt.js build / generate output
 .nuxt
-dist
+
+# Commit production build to github for openuserjs integration
+# And ignore dev build
+dist/translatelib.dev.js
 
 # Gatsby files
 .cache/
