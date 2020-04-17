@@ -2,6 +2,7 @@ import { devLog, isNumber } from "./util"
 import GoogleSettings from "./translators/google"
 import ReversoSettings from "./translators/reverso"
 import NiuTranslateSettings from "./translators/niutrans"
+import BaiduSettings from "./translators/baidu"
 
 export default class SettingsManager {
     disclaimerChangesApplyAfterReload() {
@@ -19,6 +20,7 @@ export default class SettingsManager {
             google: new GoogleSettings(),
             reverso: new ReversoSettings(),
             niu: new NiuTranslateSettings(),
+            baidu: new BaiduSettings(),
         }
         this.restoreSettings()
         this.addSettings().catch((e) => devLog(e, "addsettings"))

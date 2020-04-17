@@ -9,6 +9,7 @@ const banner = (addition) => `// ==UserScript==
 // @grant        GM_getValue
 // @grant        GM_xmlhttpRequest
 // @connect      niutrans.vip
+// @connect      baidu.com
 // @require      https://userscripts-mirror.org/scripts/source/107941.user.js#sha384=Q8t880BurrlGKTdpvYv2+da12PYnvljdiU8aJvakk1uE3QMbzb190ueXNpAUY98p${addition}
 // @license      MIT
 // ==/UserScript==
