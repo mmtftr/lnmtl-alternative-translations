@@ -1,7 +1,7 @@
 import { devLog } from "../util"
 import ProviderSettings from "./default"
 class NiuTranslate {
-    chunkLen = 3200
+    chunkLen = 2000
     async translateText(text) {
         let translateResult = await this.translateNiuWithGM(text)
 
@@ -12,11 +12,21 @@ class NiuTranslate {
             GM_xmlhttpRequest({
                 method: "GET",
                 url:
-                    "http://test.niutrans.vip/NiuTransServer/testtrans?from=zh&to=en&src_text=" +
+                    "https://test.niutrans.vip/NiuTransServer/testtrans?from=auto&to=en&src_text=" +
                     encodeURIComponent(text),
                 headers: {
                     "Accept-Encoding": "gzip, deflate",
+                    Accept: "application/json, text/plain, */*",
+                    DNT: 1,
                     "User-Agent": window.useragent,
+                    Connection: "keep-alive",
+                    Origin: "niutrans.vip",
+                    Host: "test.niutrans.vip",
+                    Origin: "https://niutrans.vip",
+                    Referer: "https://niutrans.vip/trans",
+                    "Sec-Fetch-Dest": "empty",
+                    "Sec-Fetch-Mode": "cors",
+                    "Sec-Fetch-Site": "same-site",
                 },
                 onload: function (result) {
                     try {
