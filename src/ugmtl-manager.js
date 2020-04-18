@@ -10,7 +10,7 @@ export default class UGMTLManager {
     }
 
     /**
-     * @param {Number} waitTime
+     * @param {number} waitTime
      */
     constructor(waitTime) {
         /**
@@ -65,6 +65,8 @@ export default class UGMTLManager {
             window.performance.getEntriesByName("userjs_UGMTLComplete")
                 .length !== 0
         ) {
+            devLog("started too late")
+            devLog(window.sessionStorage.getItem("userjs_UGMTLComplete"))
             this.rawsReplaced = true
             this.UGMTLUpdated = true
         }
@@ -111,6 +113,7 @@ export default class UGMTLManager {
             .each(function () {
                 $(this).text(" " + $(this).text())
             })
+        devLog("we replaced")
         this._resolve()
     }
 }
