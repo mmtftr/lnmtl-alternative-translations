@@ -59,9 +59,11 @@ export default class UGMTLManager {
         this.observeDocument() // Listen for UGMTL's document event
 
         if (
-            window.sessionStorage.getItem("userjs_UGMTLComplete") &&
-            window.sessionStorage.getItem("userjs_UGMTLComplete") >
-                window.performance.timing.fetchStart
+            (window.sessionStorage.getItem("userjs_UGMTLComplete") &&
+                window.sessionStorage.getItem("userjs_UGMTLComplete") >
+                    window.performance.timing.domLoading) ||
+            window.performance.getEntriesByName("userjs_UGMTLComplete")
+                .length !== 0
         ) {
             this.rawsReplaced = true
             this.UGMTLUpdated = true
