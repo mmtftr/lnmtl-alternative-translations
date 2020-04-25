@@ -5,6 +5,10 @@ import { getRawParagraphs, devLog, sleepPromise } from "./util"
 import UGMTLManager from "./ugmtl-manager"
 import UIManager from "./ui"
 import ProgressManager from "./progress"
+import smoothscroll from "smoothscroll-polyfill"
+
+// Add polyfill for smooth scrolling into elements, not available in some browsers.
+smoothscroll.polyfill()
 
 async function main() {
     const currentPath = window.location.pathname.split("/").slice(1)
@@ -18,8 +22,8 @@ async function main() {
     try {
         ugmtl = new UGMTLManager(200)
         settingsManager = new SettingsManager()
-        uiManager = new UIManager(settingsManager)
         progressManager = new ProgressManager()
+        uiManager = new UIManager(settingsManager, progressManager)
     } catch (e) {
         devLog("init failed")
         return devLog(e)
@@ -31,6 +35,7 @@ async function main() {
 
     devLog("waited for raws")
     let enabledTranslators = []
+    let tempProviders = []
     for (const provider in settingsManager.settings) {
         const providerSettings = settingsManager.settings[provider]
         if (!providerSettings.enabled) {
@@ -45,19 +50,32 @@ async function main() {
             .then((translatedPars) => {
                 devLog(translatedPars)
                 uiManager.addTL(translatedPars, providerSettings)
-                uiManager.enableButton(providerSettings)
                 uiManager.annotateTerms(providerSettings)
+                uiManager.enableButton(providerSettings)
             })
             .catch((e) => uiManager.errorButton(providerSettings)) // An error propagating here means that translation failed at least 3 times for a chunk
 
-        if (providerSettings.autoSwitchOn)
+        if (providerSettings.autoSwitchOn || providerSettings.temporary)
             enabledTranslators.push(translatePromise)
+        if (providerSettings.temporary) tempProviders.push(providerSettings)
         await sleepPromise(200)
     }
     if (settingsManager.lib.autoSwitchLNMTL) {
         await Promise.race(enabledTranslators)
-        uiManager.hideLNMTL()
+        await uiManager.hideLNMTL()
+        console.log("lnmtl hidden")
     }
+    await Promise.all(enabledTranslators)
+    for (const provider of tempProviders) {
+        uiManager.hideProvider(provider)
+    }
+
+    console.log("restore progress")
+    progressManager.restoreProgress()
+    progressManager.trackSentenceProgress()
+
+    // clean up if wanted
+    if (settingsManager.lib.putBackRaws) ugmtl.rawsReplace(true)
 }
 
 main()

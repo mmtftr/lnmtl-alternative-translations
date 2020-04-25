@@ -1,4 +1,4 @@
-import { devLog, sleepPromise } from "./util"
+import { devLog, sleepPromise, defer } from "./util"
 
 export default class UIManager {
     async constructUI() {
@@ -6,7 +6,17 @@ export default class UIManager {
             this.addButton(this.settingsManager.settings[provider])
         }
         this.addModal()
+        this.addRestoreButton()
         devLog("uimanager initialized")
+    }
+    addRestoreButton() {
+        $("body").append(
+            `<button role='button' id='restoreProgress' class='btn btn-primary'>Restore Progress</button>`
+        )
+        $("#restoreProgress").on(
+            "click",
+            this.progressManager.restoreProgress.bind(this.progressManager)
+        )
     }
     addModal() {
         $(`
@@ -29,8 +39,9 @@ export default class UIManager {
         </div>
         `).appendTo("body")
     }
-    constructor(settingsManager) {
+    constructor(settingsManager, progressManager) {
         this.settingsManager = settingsManager
+        this.progressManager = progressManager
         this.constructUI()
         this.supportsLookbehind = this.lookbehindCheck() // We need to know if lookbehind works for better term replacement.
     }
@@ -127,12 +138,17 @@ export default class UIManager {
             .removeClass("btn-disabled")
             .removeClass("text-muted")
 
-        if (providerSettings.autoSwitchOn) {
-            div.animate({
-                height: "toggle",
-                opacity: "toggle",
-            })
+        if (providerSettings.autoSwitchOn || providerSettings.temporary) {
             button.toggleClass("btn-primary").toggleClass("btn-default")
+            return await new Promise((res) => {
+                div.animate(
+                    {
+                        height: "toggle",
+                        opacity: "toggle",
+                    },
+                    { complete: res }
+                )
+            })
         }
     }
 
@@ -148,13 +164,26 @@ export default class UIManager {
         }
     }
     hideLNMTL() {
-        $(".translated").animate({
-            height: "toggle",
-            opacity: "toggle",
-        })
         $(".js-toggle-translated")
             .toggleClass("btn-primary")
             .toggleClass("btn-default")
+        let deferred = defer()
+        $(".translated").animate(
+            {
+                height: "toggle",
+                opacity: "toggle",
+            },
+            { complete: deferred.resolve }
+        )
+        return deferred.promise
+    }
+    hideProvider(providerSettings) {
+        const deferred = defer()
+        $(`.${providerSettings.className}`).animate(
+            { height: "toggle", opacity: "toggle" },
+            { complete: deferred.resolve }
+        )
+        return deferred.promise
     }
     createTermPopovers(par) {
         let termedPar = par

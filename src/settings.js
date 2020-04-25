@@ -36,6 +36,11 @@ export default class SettingsManager {
         .lnmtl {
             border-left: 3px solid black!important;
         }
+        #restoreProgress {
+            position: fixed;
+            bottom: 1rem;
+            left:1rem;
+        }
         `
         for (const provider in this.settings) {
             stylesheet += this.settings[provider].stylesheet
@@ -53,7 +58,8 @@ export default class SettingsManager {
     }
     restoreLibSettings() {
         const autoSwitchLNMTL = GM_SuperValue.get("autoSwitchLNMTL", false)
-        this.lib = { autoSwitchLNMTL: autoSwitchLNMTL }
+        const putBackRaws = GM_SuperValue.get("putBackRaws", false)
+        this.lib = { autoSwitchLNMTL, putBackRaws }
         devLog("restored autoSwitchLNMTL", autoSwitchLNMTL)
     }
     restoreProviderSettings(providerSettings) {
@@ -81,6 +87,10 @@ export default class SettingsManager {
             `${providerSettings.className}-waitTime`,
             providerSettings.defaultWaitTime || 1000
         )
+        providerSettings.temporary = GM_SuperValue.get(
+            `${providerSettings.className}-temporary`,
+            false
+        )
     }
     //#endregion
     //#region addSettings
@@ -92,12 +102,14 @@ export default class SettingsManager {
         this.addStyling()
     }
     addLibSettings() {
-        const checked = this.lib.autoSwitchLNMTL ? "checked" : ""
+        const autoSwitchChecked = this.lib.autoSwitchLNMTL ? "checked" : ""
+        const putBackRaws = this.lib.putBackRaws ? "checked" : ""
         devLog(this.lib.autoSwitchLNMTL, "LNMTL AUTO SWITCH")
 
         const libsettingshtml = `
             <h3>TranslateLib Settings</h3>
-            <sub><input id="autoSwitchLNMTL" type="checkbox" ${checked}></sub> <label for="autoSwitchLNMTL">Automatically hide English LNMTL Translation after loading</label>
+            <sub><input id="autoSwitchLNMTL" type="checkbox" ${autoSwitchChecked}></sub> <label for="autoSwitchLNMTL">Automatically hide English LNMTL Translation after loading</label><br>
+            <sub><input id="putBackRaws" type="checkbox" ${putBackRaws}></sub> <label for="putBackRaws">Restore the original state of the raws by putting back the Chinese.</label>
             <p>Enabled translators:</p>
             <div class="btn-group btn-group-lg btn-group-justified" role="group" id="enabledTranslators">
             ${Object.keys(this.settings)
@@ -146,6 +158,12 @@ export default class SettingsManager {
             devLog("set autoSwitchLNMTL to", autoSwitchLNMTL)
             _this.disclaimerChangesApplyAfterReload()
         })
+        $("#putBackRaws").on("change", function () {
+            const putBackRaws = $(this).get(0).checked
+            GM_SuperValue.set("putBackRaws", putBackRaws ? true : false)
+            devLog("set putBackRaws to", putBackRaws)
+            _this.disclaimerChangesApplyAfterReload()
+        })
         for (let provider in this.settings) {
             $(`#${this.settings[provider].className}-enabled`).on(
                 "click",
@@ -176,6 +194,17 @@ export default class SettingsManager {
             GM_SuperValue.set(
                 `${providerSettings.className}-autoSwitchOn`,
                 autoSwitchOn
+            )
+            _this.disclaimerChangesApplyAfterReload()
+        })
+        const optionTemp = $(
+            `<sub><input id="${providerSettings.className}-temporary" type="checkbox"${checked}></sub> <label for="${providerSettings.className}-temporary">Temporarily show ${providerSettings.name} before turning off when all providers are loaded.</label>`
+        ).on("change", function () {
+            const temporary = $(`#${providerSettings.className}-temporary`)[0]
+                .checked
+            GM_SuperValue.set(
+                `${providerSettings.className}-temporary`,
+                temporary
             )
             _this.disclaimerChangesApplyAfterReload()
         })
@@ -250,6 +279,8 @@ export default class SettingsManager {
         $(`#${providerSettings.className}-settings`)
             .append(title)
             .append(optionAutoswitch)
+            .append("<br>")
+            .append(optionTemp)
             .append("<br>")
             .append(row)
     }

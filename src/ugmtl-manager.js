@@ -88,8 +88,8 @@ export default class UGMTLManager {
     /**
      * Replaces raws when UGMTL is not installed
      */
-    rawsReplace() {
-        if (this.isUGMTLReplacingRaws()) return
+    rawsReplace(override) {
+        if (this.isUGMTLReplacingRaws() && !override) return
         $(".original t").each(function () {
             let mytext = $(this).text()
             $(this).text(
