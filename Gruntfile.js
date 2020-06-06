@@ -1,7 +1,7 @@
 const banner = (addition) => `// ==UserScript==
 // @name         Translation Library
 // @namespace    lnmtltl
-// @version      0.4.1
+// @version      0.4.2
 // @description  Includes Sogou, Baido, Google Translate and more!
 // @author       mmtf
 // @match        https://lnmtl.com/**

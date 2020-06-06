@@ -5,9 +5,11 @@ export default class ProgressManager {
             let novel
             devLog("checking progress")
             if ((novel = JSON.parse(GM_getValue(currentPath[1])))) {
-                $(".panel-body").append(
-                    `<dl> <dt>Continue where you left off</dt><a href="${novel.chapterLink}" class="btn btn-success">Chapter ${novel.chapterNumber}</a> </dl>`
-                )
+                $(".panel-body")
+                    .eq(0)
+                    .append(
+                        `<dl> <dt>Continue where you left off</dt><a href="${novel.chapterLink}" class="btn btn-success">Chapter ${novel.chapterNumber}</a> </dl>`
+                    )
             }
         } catch (exception) {
             devLog(exception + " no progress found")
