@@ -39,7 +39,7 @@ class NiuTranslate {
         //     })
         // })
         return fetch(
-            "https://test.niutrans.com/NiuTransServer/testtrans?from=cht&to=en&src_text=" +
+            "https://test.niutrans.com/NiuTransServer/testtrans?query=50980349&from=cht&to=en&src_text=" +
                 encodeURIComponent(text) +
                 "&source=text",
             {
