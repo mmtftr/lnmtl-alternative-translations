@@ -1,13 +1,56 @@
 import { devLog } from "../util"
 import ProviderSettings from "./default"
-class NiuTranslate {
+function niutransGetUrlHash() {
+    return new Promise((resolve) => {
+        GM_xmlhttpRequest({
+            method: "GET",
+            url: "https://niutrans.com/Trans?type=text",
+            headers: {
+                accept: "application/json, text/plain, */*",
+            },
+            onload: function (result) {
+                try {
+                    var webpackHash = /js\/app\.(.*)\.js/g.exec(result.response)
+                    resolve(webpackHash[1])
+                } catch (error) {
+                    console.log(error)
+                }
+            },
+        })
+    })
+}
+
+export async function niutransGetQuery() {
+    let hash = await niutransGetUrlHash()
+
+    return new Promise((resolve) => {
+        GM_xmlhttpRequest({
+            method: "GET",
+            url: "https://niutrans.com/static/js/app." + hash + ".js",
+            headers: {
+                accept: "application/json, text/plain, */*",
+            },
+            onload: function (result) {
+                try {
+                    var webpackHash = /testtrans\?query=(.*?)"/g.exec(
+                        result.response
+                    )
+                    resolve(webpackHash[1])
+                } catch (error) {
+                    console.log(error)
+                }
+            },
+        })
+    })
+}
+export class NiuTranslate {
     chunkLen = 2000
     async translateText(text) {
         let translateResult = await this.translateNiuWithGM(text)
 
         return translateResult["tgt_text"].replace(/\n\s\n/g, "\n\n")
     }
-    translateNiuWithGM(text) {
+    async translateNiuWithGM(text) {
         // return new Promise((res, rej) => {
         //     GM_xmlhttpRequest({
         //         method: "GET",
@@ -39,9 +82,9 @@ class NiuTranslate {
         //     })
         // })
         return fetch(
-            "https://test.niutrans.com/NiuTransServer/testtrans?query=2170147&from=cht&to=en&src_text=" +
-                encodeURIComponent(text) +
-                "&source=text",
+            `https://test.niutrans.com/NiuTransServer/testtrans?query=${
+                this.query
+            }&from=cht&to=en&src_text=${encodeURIComponent(text)}&source=text`,
             {
                 headers: {
                     accept: "application/json, text/plain, */*",

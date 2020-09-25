@@ -1,7 +1,7 @@
 const banner = (addition) => `// ==UserScript==
 // @name         Translation Library
 // @namespace    lnmtltl
-// @version      0.4.4
+// @version      0.5
 // @description  Includes Sogou, Baido, Google Translate and more!
 // @author       mmtf
 // @match        https://lnmtl.com/**
@@ -9,8 +9,11 @@ const banner = (addition) => `// ==UserScript==
 // @grant        GM_getValue
 // @grant        GM_xmlhttpRequest
 // @connect      niutrans.vip
+// @connect      niutrans.com
 // @connect      baidu.com
-// @require      https://userscripts-mirror.org/scripts/source/107941.user.js#sha384=Q8t880BurrlGKTdpvYv2+da12PYnvljdiU8aJvakk1uE3QMbzb190ueXNpAUY98p${addition}
+// @require      https://userscripts-mirror.org/scripts/source/107941.user.js#sha384=Q8t880BurrlGKTdpvYv2+da12PYnvljdiU8aJvakk1uE3QMbzb190ueXNpAUY98p${
+    addition || ""
+}
 // @license      MIT
 // ==/UserScript==
 `
