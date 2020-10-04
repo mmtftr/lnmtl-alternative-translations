@@ -59,7 +59,8 @@ export default class SettingsManager {
     restoreLibSettings() {
         const autoSwitchLNMTL = GM_SuperValue.get("autoSwitchLNMTL", false)
         const putBackRaws = GM_SuperValue.get("putBackRaws", false)
-        this.lib = { autoSwitchLNMTL, putBackRaws }
+        const showModalOnClick = GM_SuperValue.get("showModalOnClick", true)
+        this.lib = { autoSwitchLNMTL, putBackRaws, showModalOnClick }
         devLog("restored autoSwitchLNMTL", autoSwitchLNMTL)
     }
     restoreProviderSettings(providerSettings) {
@@ -104,12 +105,14 @@ export default class SettingsManager {
     addLibSettings() {
         const autoSwitchChecked = this.lib.autoSwitchLNMTL ? "checked" : ""
         const putBackRaws = this.lib.putBackRaws ? "checked" : ""
+        const showModalOnClick = this.lib.showModalOnClick ? "checked" : ""
         devLog(this.lib.autoSwitchLNMTL, "LNMTL AUTO SWITCH")
 
         const libsettingshtml = `
             <h3>TranslateLib Settings</h3>
             <sub><input id="autoSwitchLNMTL" type="checkbox" ${autoSwitchChecked}></sub> <label for="autoSwitchLNMTL">Automatically hide English LNMTL Translation after loading</label><br>
-            <sub><input id="putBackRaws" type="checkbox" ${putBackRaws}></sub> <label for="putBackRaws">Restore the original state of the raws by putting back the Chinese.</label>
+            <sub><input id="putBackRaws" type="checkbox" ${putBackRaws}></sub> <label for="putBackRaws">Restore the original state of the raws by putting back the Chinese.</label><br>
+            <sub><input id="showModalOnClick" type="checkbox" ${showModalOnClick}></sub> <label for="showModalOnClick">Show a translations modal when you click on a translation.</label>
             <p>Enabled translators:</p>
             <div class="btn-group btn-group-lg btn-group-justified" role="group" id="enabledTranslators">
             ${Object.keys(this.settings)
@@ -163,6 +166,15 @@ export default class SettingsManager {
             GM_SuperValue.set("putBackRaws", putBackRaws ? true : false)
             devLog("set putBackRaws to", putBackRaws)
             _this.disclaimerChangesApplyAfterReload()
+        })
+        $("#showModalOnClick").on("change", function () {
+            const showModalOnClick = $(this).get(0).checked
+            GM_SuperValue.set(
+                "showModalOnClick",
+                showModalOnClick ? true : false
+            )
+            devLog("set showModalOnClick to", showModalOnClick)
+            _this.lib.showModalOnClick = showModalOnClick
         })
         for (let provider in this.settings) {
             $(`#${this.settings[provider].className}-enabled`).on(

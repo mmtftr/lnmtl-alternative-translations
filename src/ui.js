@@ -71,6 +71,7 @@ export default class UIManager {
         div.hide()
     }
     showTranslationModal(index) {
+        if (!this.settingsManager.lib.showModalOnClick) return
         let translations = []
         translations.push(
             `<div class="lnmtl list-group-item">

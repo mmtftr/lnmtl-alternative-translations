@@ -108,3 +108,4 @@ dist/translatelib.dev.js
 
 # browserify cache
 cache/
+.DS_Store
