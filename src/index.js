@@ -31,9 +31,13 @@ async function main() {
 
     devLog("managers initialized")
     await ugmtl.rawsReplacedPromise
+    devLog("waited for raws")
     const pars = getRawParagraphs()
 
-    devLog("waited for raws")
+    if (process.env.NODE_ENV !== "production") {
+        unsafeWindow.tlSet = GM_SuperValue.set.bind(GM_SuperValue)
+        unsafeWindow.tlGet = GM_SuperValue.get.bind(GM_SuperValue)
+    }
     let enabledTranslators = []
     let tempProviders = []
     for (const provider in settingsManager.settings) {
@@ -63,14 +67,14 @@ async function main() {
     if (settingsManager.lib.autoSwitchLNMTL) {
         await Promise.race(enabledTranslators)
         await uiManager.hideLNMTL()
-        console.log("lnmtl hidden")
+        // console.log("lnmtl hidden")
     }
     await Promise.all(enabledTranslators)
     for (const provider of tempProviders) {
         uiManager.hideProvider(provider)
     }
 
-    console.log("restore progress")
+    // console.log("restore progress")
     progressManager.restoreProgress()
     progressManager.trackSentenceProgress()
 

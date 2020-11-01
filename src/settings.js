@@ -45,7 +45,7 @@ export default class SettingsManager {
         for (const provider in this.settings) {
             stylesheet += this.settings[provider].stylesheet
         }
-        console.log(stylesheet)
+        // console.log(stylesheet)
         return stylesheet
     }
     //#endregion

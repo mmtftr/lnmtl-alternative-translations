@@ -46,11 +46,17 @@ export async function niutransGetQuery() {
 export class NiuTranslate {
     chunkLen = 2000
     async translateText(text) {
-        let translateResult = await this.translateNiuWithGM(text)
+        let translateResult = await this.translateNiuWithFetch(text)
+        if (
+            translateResult["tgt_text"].split("\n").length === 1 &&
+            text.split("\n").length !== -1
+        ) {
+            throw "NiuTrans is not properly translating!"
+        }
 
         return translateResult["tgt_text"].replace(/\n\s\n/g, "\n\n")
     }
-    async translateNiuWithGM(text) {
+    async translateNiuWithFetch(text) {
         // return new Promise((res, rej) => {
         //     GM_xmlhttpRequest({
         //         method: "GET",
