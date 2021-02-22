@@ -5,7 +5,7 @@ The reason is simple, I've improved myself and I am ready to attempt a bigger an
 
 ## What is TranslateLib
 TranslateLib is a more general version of GTLNMTL and adds support for future alternative translation providers. It also has all the goodies of GTLNMTL and will 
-continue to improve in the future. It will support Sogou in the very near future.
+continue to improve in the future. 
 
 To be more specific, TranslateLib provides the groundwork for alternative translation providers. TranslateLib uses ES6 features heavily and has a cleaner codebase than Google Translate.
 It's also completely opensourced with the GNU Public License.

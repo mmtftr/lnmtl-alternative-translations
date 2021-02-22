@@ -5,6 +5,7 @@
 // @description  Includes Sogou, Baido, Google Translate and more!
 // @author       mmtf
 // @match        https://lnmtl.com/**
+// @match        https://tt.lnmtl.com/**
 // @grant        GM_setValue
 // @grant        GM_getValue
 // @grant        GM_xmlhttpRequest
