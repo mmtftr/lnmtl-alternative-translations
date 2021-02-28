@@ -2,8 +2,8 @@ export default class ProviderSettings {
     constructor() {}
     get stylesheet() {
         return (
-            this.themes[this.selectedTheme] +
-            `.${this.className} {cursor:pointer; border-left: 3px solid ${this.borderColor}!important;position:relative;}
+          this.selectedTheme === "customStyleSheet" ? "":this.themes[this.selectedTheme] +
+            `\n.${this.className} {cursor:pointer; border-left: 3px solid ${this.borderColor}!important;position:relative;}
             .${this.className}.translateLib::before {
                 content: '';
                 width: 100%;

@@ -28,7 +28,8 @@ export default class SettingsManager {
     }
     //#region styling
     addStyling() {
-        $('<style type="text/css"/>').text(this.stylesheet).appendTo("head")
+        for (const style in this.stylesheet)
+            $('<style type="text/css"/>').text(style).appendTo("head")
     }
     get stylesheet() {
         let stylesheet = ""
@@ -42,11 +43,15 @@ export default class SettingsManager {
             left:1rem;
         }
         `
+        const stylesheets = []
         for (const provider in this.settings) {
+            if (this.settings[provider].theme === "customStyleSheet")
+                stylesheets.push(this.settings[provider].customStyleSheet)
             stylesheet += this.settings[provider].stylesheet
         }
         // console.log(stylesheet)
-        return stylesheet
+
+        return [stylesheet].concat(stylesheets)
     }
     //#endregion
     //#region restoreSettings
