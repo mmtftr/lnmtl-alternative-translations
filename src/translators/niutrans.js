@@ -49,8 +49,12 @@ export class NiuTranslate {
         let translateResult = await this.translateNiuWithFetch(text)
         if (
             translateResult["tgt_text"].split("\n").length === 1 &&
-            text.split("\n").length !== -1
+            text.split("\n").length !== 1
         ) {
+            devLog(
+                text.split("\n").length,
+                translateResult["tgt_text"].split("\n").length
+            )
             throw "NiuTrans is not properly translating!"
         }
 

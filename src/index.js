@@ -30,7 +30,10 @@ async function main() {
     }
 
     devLog("managers initialized")
+
     await ugmtl.rawsReplacedPromise
+    uiManager.setButtonsText("Loading {providerName}...")
+
     devLog("waited for raws")
     const pars = getRawParagraphs()
 

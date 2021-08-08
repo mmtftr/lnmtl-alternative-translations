@@ -6,11 +6,11 @@ export function getMTLParagraphs() {
     return $(".translated").text().trim().split("\n")
 }
 
-export function devLog(message) {
+export function devLog(...message) {
     if (process.env.NODE_ENV === "production") {
         return
     }
-    console.log(message)
+    console.log(...message)
 }
 
 export function reportError(error, appState) {
@@ -29,8 +29,7 @@ export function reportError(error, appState) {
 
 export function postForm(error, appState) {
     return $.ajax({
-        url:
-            "https://docs.google.com/forms/u/0/d/e/1FAIpQLSf9_pdqwA36TaHjxxCKeT8iv-eLhXIx1DO2bxD7V7tKG3UXXw/formResponse",
+        url: "https://docs.google.com/forms/u/0/d/e/1FAIpQLSf9_pdqwA36TaHjxxCKeT8iv-eLhXIx1DO2bxD7V7tKG3UXXw/formResponse",
         data: {
             "entry.1958338513": isUGMTLReplacingRaws()
                 ? "true"

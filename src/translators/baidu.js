@@ -17,9 +17,8 @@ class BaiduTranslate {
                         const windowToken = result.responseText.match(
                             /window\.gtk = '(.*?)'/
                         )[1]
-                        const commonToken = result.responseText.match(
-                            /token: '(.*?)',/
-                        )[1]
+                        const commonToken =
+                            result.responseText.match(/token: '(.*?)',/)[1]
 
                         resolve([windowToken, commonToken])
                     } catch (exception) {
@@ -81,14 +80,14 @@ class BaiduTranslate {
 export default class BaiduSettings extends ProviderSettings {
     constructor() {
         super()
-        console.log("baidu")
+        devLog("baidu")
         this.shortname = "BD"
         this.className = "bd"
         this.name = "Baidu Translate"
         this.defaultColor = "orange"
         this.defaultWaitTime = 1000
         this.provider = new BaiduTranslate()
-        console.log("initiate baidu")
+        devLog("initiate baidu")
         this.themes = {
             Default:
                 ".bd { color:white; font-size: 2.3rem; margin-bottom:42px; font-family: Roboto }",

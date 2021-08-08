@@ -107,7 +107,7 @@ export default class UIManager {
             return
         }
         $(".js-toggle-original").after(
-            `<button class="btn btn-disabled text-muted js-toggle-${providerSettings.className}">Loading ${providerSettings.shortname}...</button>`
+            `<button class="btn btn-disabled text-muted js-toggle-${providerSettings.className}">Waiting...</button>`
         )
     }
     errorButton(providerSettings) {
@@ -118,6 +118,23 @@ export default class UIManager {
             .removeClass("text-muted")
             .text("Failed " + providerSettings.shortname)
         throw new Error("Failed to translate with " + providerSettings.name)
+    }
+    /**
+     * Update all button texts
+     *
+     * Button text can contain a variable `{providerName}` that will be replaced
+     * with the provider abbreviation
+     * @param {string} buttonText
+     */
+    setButtonsText(buttonText) {
+        for (const providerSettings in this.settingsManager.settings) {
+            $(`.js-toggle-${providerSettings.className}`).text(
+                buttonText.replace(
+                    this.escapeRegExp("{providerName}"),
+                    providerSettings.shortname
+                )
+            )
+        }
     }
     /**
      * After translation is complete, enables the button of the translation.
