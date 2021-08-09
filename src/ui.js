@@ -127,10 +127,14 @@ export default class UIManager {
      * @param {string} buttonText
      */
     setButtonsText(buttonText) {
-        for (const providerSettings in this.settingsManager.settings) {
+        for (const provider in this.settingsManager.settings) {
+            const providerSettings = this.settingsManager.settings[provider]
+            if (!providerSettings.enabled) {
+                continue
+            }
             $(`.js-toggle-${providerSettings.className}`).text(
                 buttonText.replace(
-                    this.escapeRegExp("{providerName}"),
+                    new RegExp(this.escapeRegExp("{providerName}"), "g"),
                     providerSettings.shortname
                 )
             )
