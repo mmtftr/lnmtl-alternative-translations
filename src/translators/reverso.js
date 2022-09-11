@@ -1,7 +1,7 @@
-import { devLog } from "../util"
-import ProviderSettings from "./default"
+import { devLog } from "../util";
+import ProviderSettings from "./default";
 class ReversoTranslate {
-    chunkLen = 2400
+    chunkLen = 2400;
     async translateText(text) {
         let request = await fetch(
             "https://async5.reverso.net/WebReferences/WSAJAXInterface.asmx/TranslateCorrWS",
@@ -18,34 +18,34 @@ class ReversoTranslate {
                     usecorr: true,
                 }),
             }
-        )
-        let translateResult = await request.json()
-        devLog(translateResult)
+        );
+        let translateResult = await request.json();
+        devLog(translateResult);
         if (translateResult.d.result) {
-            return translateResult.d.result
+            return translateResult.d.result;
         }
-        const pars = JSON.parse(translateResult.d.translation)
+        const pars = JSON.parse(translateResult.d.translation);
         if ("sentence" in pars[0]) {
-            return pars.reduce((acc, curr) => acc + curr.sentence, "")
+            return pars.reduce((acc, curr) => acc + curr.sentence, "");
         }
-        return pars.reduce((acc, curr) => acc + curr.paragraph, "")
+        return pars.reduce((acc, curr) => acc + curr.paragraph, "");
     }
 }
 export default class ReversoSettings extends ProviderSettings {
     constructor() {
-        super()
-        this.shortname = "RV"
-        this.className = "rv"
-        this.name = "Reverso Translate"
-        this.defaultColor = "lightcoral"
-        this.defaultWaitTime = 500
-        this.provider = new ReversoTranslate()
+        super();
+        this.shortname = "RV";
+        this.className = "rv";
+        this.name = "Reverso Translate";
+        this.defaultColor = "lightcoral";
+        this.defaultWaitTime = 500;
+        this.provider = new ReversoTranslate();
         this.themes = {
             Default:
                 ".rv { color:white; font-size: 2.3rem; margin-bottom:42px; font-family: Roboto }",
             LNMTL_EN: "",
             LNMTL_ZN: ".rv {font-size: 150%;}",
             Custom: "customStyleSheet",
-        }
+        };
     }
 }

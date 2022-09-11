@@ -1,5 +1,5 @@
-import { devLog } from "../util"
-import ProviderSettings from "./default"
+import { devLog } from "../util";
+import ProviderSettings from "./default";
 function niutransGetUrlHash() {
     return new Promise((resolve) => {
         GM_xmlhttpRequest({
@@ -10,18 +10,20 @@ function niutransGetUrlHash() {
             },
             onload: function (result) {
                 try {
-                    var webpackHash = /js\/app\.(.*)\.js/g.exec(result.response)
-                    resolve(webpackHash[1])
+                    var webpackHash = /js\/app\.(.*)\.js/g.exec(
+                        result.response
+                    );
+                    resolve(webpackHash[1]);
                 } catch (error) {
-                    console.log(error)
+                    console.log(error);
                 }
             },
-        })
-    })
+        });
+    });
 }
 
 export async function niutransGetQuery() {
-    let hash = await niutransGetUrlHash()
+    let hash = await niutransGetUrlHash();
 
     return new Promise((resolve) => {
         GM_xmlhttpRequest({
@@ -34,19 +36,19 @@ export async function niutransGetQuery() {
                 try {
                     var webpackHash = /testtrans\?query=(.*?)"/g.exec(
                         result.response
-                    )
-                    resolve(webpackHash[1])
+                    );
+                    resolve(webpackHash[1]);
                 } catch (error) {
-                    console.log(error)
+                    console.log(error);
                 }
             },
-        })
-    })
+        });
+    });
 }
 export class NiuTranslate {
-    chunkLen = 2000
+    chunkLen = 2000;
     async translateText(text) {
-        let translateResult = await this.translateNiuWithFetch(text)
+        let translateResult = await this.translateNiuWithFetch(text);
         if (
             translateResult["tgt_text"].split("\n").length === 1 &&
             text.split("\n").length !== 1
@@ -54,11 +56,11 @@ export class NiuTranslate {
             devLog(
                 text.split("\n").length,
                 translateResult["tgt_text"].split("\n").length
-            )
-            throw "NiuTrans is not properly translating!"
+            );
+            throw "NiuTrans is not properly translating!";
         }
 
-        return translateResult["tgt_text"].replace(/\n\s\n/g, "\n\n")
+        return translateResult["tgt_text"].replace(/\n\s\n/g, "\n\n");
     }
     async translateNiuWithFetch(text) {
         // return new Promise((res, rej) => {
@@ -111,24 +113,24 @@ export class NiuTranslate {
                 mode: "cors",
                 credentials: "omit",
             }
-        ).then((data) => data.json())
+        ).then((data) => data.json());
     }
 }
 export default class NiuTranslateSettings extends ProviderSettings {
     constructor() {
-        super()
-        this.shortname = "NT"
-        this.className = "nt"
-        this.name = "Niutrans Translate"
-        this.defaultColor = "lightpink"
-        this.defaultWaitTime = 5000
-        this.provider = new NiuTranslate()
+        super();
+        this.shortname = "NT";
+        this.className = "nt";
+        this.name = "Niutrans Translate";
+        this.defaultColor = "lightpink";
+        this.defaultWaitTime = 5000;
+        this.provider = new NiuTranslate();
         this.themes = {
             Default:
                 ".nt { color:white; font-size: 2.3rem; margin-bottom:42px; font-family: Roboto }",
             LNMTL_EN: "",
             LNMTL_ZN: ".nt {font-size: 150%;}",
             Custom: "customStyleSheet",
-        }
+        };
     }
 }

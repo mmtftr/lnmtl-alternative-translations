@@ -1,7 +1,7 @@
 const banner = (addition) => `// ==UserScript==
 // @name         Translation Library
 // @namespace    lnmtltl
-// @version      0.5.7
+// @version      0.5.8
 // @description  Includes Niutrans, Baido, Google Translate and more!
 // @author       mmtf
 // @match        https://lnmtl.com/**
@@ -12,15 +12,13 @@ const banner = (addition) => `// ==UserScript==
 // @connect      niutrans.vip
 // @connect      niutrans.com
 // @connect      baidu.com
-// @require      https://userscripts-mirror.org/scripts/source/107941.user.js#sha384=Q8t880BurrlGKTdpvYv2+da12PYnvljdiU8aJvakk1uE3QMbzb190ueXNpAUY98p${
-    addition || ""
-}
+${addition || ""}
 // @license      MIT
 // ==/UserScript==
-`
+`;
 const productionMeta = `
 // @downloadURL https://openuserjs.org/install/mmtf/Translation_Library.user.js
-// @updateURL https://openuserjs.org/meta/mmtf/Translation_Library.meta.js`
+// @updateURL https://openuserjs.org/meta/mmtf/Translation_Library.meta.js`;
 
 module.exports = (grunt) => {
     grunt.initConfig({
@@ -81,10 +79,10 @@ module.exports = (grunt) => {
             files: "src/**/*.js",
             tasks: ["browserify:development"],
         },
-    })
+    });
 
-    grunt.loadNpmTasks("grunt-browserify")
-    grunt.loadNpmTasks("grunt-contrib-watch")
+    grunt.loadNpmTasks("grunt-browserify");
+    grunt.loadNpmTasks("grunt-contrib-watch");
 
-    grunt.registerTask("default", ["browserify"])
-}
+    grunt.registerTask("default", ["browserify"]);
+};

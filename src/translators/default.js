@@ -19,6 +19,6 @@ export default class ProviderSettings {
                 margin-left:15px;
             }
 
-            `
+            `;
     }
 }

@@ -1,6 +1,6 @@
 {
-  "tabWidth": 4,
-  "useTabs": false,
-  "jsxBracketSameLine": true,
-  "semi": false
+    "tabWidth": 4,
+    "useTabs": false,
+    "jsxBracketSameLine": true,
+    "semi": true
 }

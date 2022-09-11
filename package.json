@@ -39,7 +39,8 @@
         "grunt-contrib-concat": "^1.0.1",
         "grunt-contrib-watch": "^1.1.0",
         "husky": "^4.2.5",
-        "minifyify": "^7.3.5"
+        "minifyify": "^7.3.5",
+        "prettier": "^2.7.1"
     },
     "husky": {
         "hooks": {
